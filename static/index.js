@@ -4,10 +4,11 @@ window.onload = function() {
     var socketStatus = document.getElementById('status');
     // var closeBtn = document.getElementById('close');
 
-    var socket = new WebSocket('ws://echo.websocket.org');
+    var socket = new WebSocket('ws://localhost:3012');
     socket.onopen = function(event) {
         socketStatus.innerHTML = 'Connected to: ' + event.currentTarget.url;
         socketStatus.className = 'open';
+        socket.send("");
     };
     socket.onclose = function(event) {
         socketStatus.innerHTML = 'Disconnected from WebSocket.';
@@ -17,6 +18,7 @@ window.onload = function() {
         console.log('WebSocket Error: ' + error);
     };
     socket.onmessage = function(event) {
+        console.log("Event received: " + event);
         outputField.innerHTML = event.data;
     };
 };

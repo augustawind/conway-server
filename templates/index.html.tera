@@ -9,5 +9,7 @@
       <div id="status">Connecting...</div>
       <pre id="game-output"></pre>
     </section>
+
+    <script src="static/index.js"></script>
   </body>
 </html>
