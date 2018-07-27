@@ -15,32 +15,43 @@ static DEFAULT_PATTERN: &str = r#"
 .......
 "#;
 
-// struct Server {
-//     out: ws::Sender,
-//     game: Game,
-// }
+struct Server {
+    out: ws::Sender,
+    game: Arc<Mutex<Game>>,
+}
 
-// impl Handler for Server {
-//     fn new
-// }
+impl Server {
+    fn new(out: ws::Sender, game: Game) -> Self {
+        Server {
+            out,
+            game: Arc::new(Mutex::new(game)),
+        }
+    }
+}
+
+impl ws::Handler for Server {
+    fn on_message(&mut self, _: ws::Message) -> ws::Result<()> {
+        let mut game = self.game.lock().unwrap();
+        game.tick();
+        self.out.send(game.draw())
+    }
+
+    fn on_close(&mut self, _: ws::CloseCode, _: &str) {
+        self.out.shutdown().unwrap();
+    }
+}
 
 fn main() {
     ws::listen(WS_ADDR, |out| {
-        let game = Arc::new(Mutex::new(Game::new(
-            Grid::from_config(GridConfig {
-                pattern: DEFAULT_PATTERN.to_string(),
-                ..Default::default()
-            }).unwrap(),
-            Default::default(),
-        )));
-        move |_| {
-            println!("Message received!");
-            let mut guard = game.lock().unwrap();
-            for output in guard.iter() {
-                println!("Sending output... {}", output);
-                out.send(output)?;
-            }
-            Ok(())
-        }
+        Server::new(
+            out,
+            Game::new(
+                Grid::from_config(GridConfig {
+                    pattern: DEFAULT_PATTERN.to_string(),
+                    ..Default::default()
+                }).unwrap(),
+                Default::default(),
+            ),
+        )
     }).unwrap();
 }

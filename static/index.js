@@ -20,5 +20,8 @@ window.onload = function() {
     socket.onmessage = function(event) {
         console.log("Event received: " + event);
         outputField.innerHTML = event.data;
+        setTimeout(function() {
+            socket.send("");
+        }, 500);
     };
 };
