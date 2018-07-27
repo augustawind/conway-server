@@ -6,7 +6,8 @@
   <body>
     <header>Conway's Game of Life</header>
     <section id="game">
-      <pre>{{ game_output }}</pre>
+      <div id="status">Connecting...</div>
+      <pre id="game-output"></pre>
     </section>
   </body>
 </html>

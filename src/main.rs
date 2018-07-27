@@ -30,7 +30,8 @@ struct Context {
 
 #[get("/", format = "text/html")]
 fn route_index(state: State<Arc<Mutex<Game>>>) -> Template {
-    let game = state.lock().expect("unlocking mutex failed");
+    let mut game = state.lock().expect("unlocking mutex failed");
+    game.tick();
     let context = Context {
         game_output: game.draw(),
     };
