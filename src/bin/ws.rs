@@ -3,7 +3,7 @@ extern crate ws;
 
 use std::sync::{Arc, Mutex};
 
-use conway::{Game, Grid, GridConfig};
+use conway::{Game, Grid, GridConfig, View};
 
 static WS_ADDR: &str = "localhost:3012";
 
@@ -21,11 +21,22 @@ struct Server {
 }
 
 impl Server {
-    fn new(out: ws::Sender, game: Game) -> Self {
+    fn new(out: ws::Sender) -> Self {
         Server {
             out,
-            game: Arc::new(Mutex::new(game)),
+            game: Arc::new(Mutex::new(Server::default_game())),
         }
+    }
+
+    fn default_game() -> Game {
+        Game::new(
+            Grid::from_config(GridConfig {
+                pattern: DEFAULT_PATTERN.to_string(),
+                view: View::Fixed,
+                ..Default::default()
+            }).unwrap(),
+            Default::default(),
+        )
     }
 }
 
@@ -36,22 +47,13 @@ impl ws::Handler for Server {
         self.out.send(game.draw())
     }
 
-    fn on_close(&mut self, _: ws::CloseCode, _: &str) {
-        self.out.shutdown().unwrap();
+    fn on_open(&mut self, _: ws::Handshake) -> ws::Result<()> {
+        let mutex = Arc::get_mut(&mut self.game).unwrap();
+        *mutex.get_mut().unwrap() = Server::default_game();
+        Ok(())
     }
 }
 
 fn main() {
-    ws::listen(WS_ADDR, |out| {
-        Server::new(
-            out,
-            Game::new(
-                Grid::from_config(GridConfig {
-                    pattern: DEFAULT_PATTERN.to_string(),
-                    ..Default::default()
-                }).unwrap(),
-                Default::default(),
-            ),
-        )
-    }).unwrap();
+    ws::listen(WS_ADDR, |out| Server::new(out)).unwrap();
 }
