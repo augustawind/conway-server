@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Conway's Game of Life</title>
+  </head>
+  <body>
+    <header>Conway's Game of Life</header>
+    <section id="game">
+      <pre>{{ game_output }}</pre>
+    </section>
+  </body>
+</html>
