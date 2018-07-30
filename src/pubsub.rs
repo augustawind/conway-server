@@ -4,7 +4,7 @@ use std::sync::{Arc, Mutex};
 
 use ws;
 
-use conway::{Cell, Game, Settings, View};
+use conway::{Game, Point, Settings, View};
 
 // Grid defaults.
 const CHAR_ALIVE: char = '■';
@@ -43,8 +43,8 @@ impl Server {
                 char_alive: CHAR_ALIVE,
                 char_dead: CHAR_DEAD,
                 view: View::Fixed,
-                width: 50,
-                height: 50,
+                width: Some(50),
+                height: Some(50),
                 ..Default::default()
             },
         )
@@ -62,7 +62,7 @@ impl Server {
 
     fn next_turn(&self, game: &mut Game) -> ws::Result<()> {
         if game.is_over() {
-            self.alert("Game over.")
+            self.alert("Grid is empty. Start a new game.")
         } else {
             game.tick();
             self.out.send(game.draw())
@@ -101,7 +101,7 @@ impl ws::Handler for Server {
                 Ok(())
             }
             Some(cmd) if cmd == CMD_SCROLL => {
-                let Cell(dx, dy): Cell = match args.next().unwrap_or_default().parse::<Cell>() {
+                let Point(dx, dy): Point = match args.next().unwrap_or_default().parse::<Point>() {
                     Ok(delta) => delta,
                     Err(err) => return self.alert(format!("WARNING: {}", err)),
                 };
