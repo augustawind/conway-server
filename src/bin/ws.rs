@@ -20,6 +20,7 @@ static DEFAULT_PATTERN: &str = r#"
 struct Server {
     out: ws::Sender,
     game: Arc<Mutex<Game>>,
+    paused: bool,
 }
 
 impl Server {
@@ -27,6 +28,7 @@ impl Server {
         Server {
             out,
             game: Arc::new(Mutex::new(Server::new_game())),
+            paused: false,
         }
     }
 
@@ -55,12 +57,24 @@ impl ws::Handler for Server {
 
         let mut args = msg.as_text()?.trim().splitn(2, ' ');
         match args.next() {
-            Some("tick") => {
+            Some("ping") => {
+                if self.paused {
+                    return Ok(());
+                }
                 game.tick();
                 self.out.send(game.draw())
             }
-            // TODO
-            Some("toggle-playback") => Ok(()),
+            Some("step") => {
+                if !self.paused {
+                    return Ok(());
+                }
+                game.tick();
+                self.out.send(game.draw())
+            }
+            Some("toggle-playback") => {
+                self.paused = !self.paused;
+                Ok(())
+            }
             Some("scroll") => {
                 let Cell(dx, dy): Cell = match args.next().unwrap_or_default().parse::<Cell>() {
                     Ok(delta) => delta,

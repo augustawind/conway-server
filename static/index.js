@@ -9,7 +9,7 @@ window.onload = function() {
     socket.onopen = function(event) {
         socketStatus.innerHTML = 'Connected to: ' + event.currentTarget.url;
         socketStatus.className = 'open';
-        socket.send('tick');
+        socket.send('ping');
     };
     socket.onclose = function(event) {
         socketStatus.innerHTML = 'Disconnected from WebSocket.';
@@ -22,7 +22,7 @@ window.onload = function() {
         console.log('Event received: ' + event);
         outputField.innerHTML = event.data;
         setTimeout(function() {
-            socket.send('tick');
+            socket.send('ping');
         }, 500);
     };
 
