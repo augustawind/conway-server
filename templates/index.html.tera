@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Conway's Game of Life</title>
+    <title>{{ title }}</title>
     <link rel="stylesheet" href="static/style.css">
   </head>
   <body>
@@ -9,7 +9,11 @@
 
     <section id="controls">
       <form id="command-form">
-        <p>
+        <textarea id="starting-grid" rows="10" cols="10" id="pattern" wrap="off"
+            autocomplete="off" spellcheck="false" autocapitalize="none" placeholder="Enter your
+            starting grid here.  Use 'x' for living cells and '.' for dead cells. Each line will
+            become a row in the grid.">{{ default_grid | trim }}</textarea>
+        <div>
           <select id="command">
             <option value="toggle-playback">Play/Pause</option>
             <option value="step">Next Frame</option>
@@ -20,7 +24,7 @@
             <option value="restart">Restart Game</option>
           </select>
           <button type="submit" id="submit-command">Submit</button>
-        </p>
+        </div>
       </form>
     </section>
 
