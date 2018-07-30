@@ -33,6 +33,8 @@ impl Server {
             Grid::from_config(GridConfig {
                 pattern: DEFAULT_PATTERN.to_string(),
                 view: View::Fixed,
+                width: 50,
+                height: 50,
                 ..Default::default()
             }).unwrap(),
             Default::default(),
