@@ -1,5 +1,5 @@
 [package]
-name = "conway-server"
+name = "conway_server"
 version = "0.1.0"
 authors = ["Dustin Rohde <dustin.rohde@gmail.com>"]
 
