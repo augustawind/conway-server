@@ -1,6 +1,8 @@
 window.onload = function() {
     var commandForm = document.getElementById('command-form');
     var commandField = document.getElementById('command');
+    var gridInput = document.getElementById("starting-grid");
+    var restartButton = document.getElementById('submit-pattern');
     var outputField = document.getElementById('game-output');
     var socketStatus = document.getElementById('status');
     // var closeBtn = document.getElementById('close');
@@ -24,6 +26,12 @@ window.onload = function() {
         setTimeout(function() {
             socket.send('ping');
         }, 500);
+    };
+
+    restartButton.onclick = function(e) {
+        var cmd = restartButton.value + " " + gridInput.value;
+        socket.send(cmd);
+        return false;
     };
 
     commandForm.onsubmit = function(e) {

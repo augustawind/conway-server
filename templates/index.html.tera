@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="static/style.css">
   </head>
   <body>
-    <header>Conway's Game of Life</header>
+    <header><h1>Conway's Game of Life</h1></header>
 
     <section id="controls">
       <form id="command-form">
@@ -14,6 +14,7 @@
             starting grid here.  Use 'x' for living cells and '.' for dead cells. Each line will
             become a row in the grid.">{{ default_grid | trim }}</textarea>
         <div>
+          <button type="submit" id="submit-pattern" value="restart">Start / Restart</button>
           <select id="command">
             <option value="toggle-playback">Play/Pause</option>
             <option value="step">Next Frame</option>

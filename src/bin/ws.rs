@@ -12,13 +12,6 @@ static WS_ADDR: &str = "localhost:3012";
 // Grid defaults.
 const CHAR_ALIVE: char = '■';
 const CHAR_DEAD: char = '□';
-static DEFAULT_PATTERN: &str = r#"
-.......
-...x...
-....x..
-..xxx..
-.......
-"#;
 
 // Commands.
 const CMD_PING: &str = "ping";
@@ -37,15 +30,15 @@ impl Server {
     fn new(out: ws::Sender) -> Self {
         Server {
             out,
-            game: Arc::new(Mutex::new(Server::new_game())),
+            game: Arc::new(Mutex::new(Server::new_game(String::new()))),
             paused: false,
         }
     }
 
-    fn new_game() -> Game {
+    fn new_game(pattern: String) -> Game {
         Game::new(
             Grid::from_config(GridConfig {
-                pattern: DEFAULT_PATTERN.to_owned(),
+                pattern: pattern,
                 char_alive: CHAR_ALIVE,
                 char_dead: CHAR_DEAD,
                 view: View::Fixed,
@@ -80,7 +73,7 @@ impl Server {
 
 impl ws::Handler for Server {
     fn on_open(&mut self, _: ws::Handshake) -> ws::Result<()> {
-        self.set_game(Server::new_game());
+        self.set_game(Server::new_game(String::new()));
         Ok(())
     }
 
@@ -117,7 +110,8 @@ impl ws::Handler for Server {
                 self.out.send(game.draw())
             }
             Some(cmd) if cmd == CMD_RESTART => {
-                *game = Server::new_game();
+                let pattern = args.next().unwrap_or_default();
+                *game = Server::new_game(pattern.to_owned());
                 Ok(())
             }
             Some(arg) => self.alert(format!(
