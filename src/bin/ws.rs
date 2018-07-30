@@ -25,7 +25,6 @@ const CMD_PING: &str = "ping";
 const CMD_STEP: &str = "step";
 const CMD_TOGGLE_PLAYBACK: &str = "toggle-playback";
 const CMD_SCROLL: &str = "scroll";
-const CMD_STOP: &str = "stop";
 const CMD_RESTART: &str = "restart";
 
 struct Server {
@@ -86,7 +85,7 @@ impl ws::Handler for Server {
     }
 
     fn on_message(&mut self, msg: ws::Message) -> ws::Result<()> {
-        let mut game = self.game.lock().unwrap();
+        let mut game: &mut Game = &mut self.game.lock().unwrap();
 
         let mut args = msg.as_text()?.trim().splitn(2, ' ');
         match args.next() {
@@ -117,10 +116,10 @@ impl ws::Handler for Server {
                 game.scroll(dx, dy);
                 self.out.send(game.draw())
             }
-            Some(cmd) if cmd == CMD_STOP => self
-                .out
-                .send("Game of Life ended. Select Restart to play again."),
-            // Some(cmd) if cmd == CMD_RESTART => {}
+            Some(cmd) if cmd == CMD_RESTART => {
+                *game = Server::new_game();
+                Ok(())
+            }
             Some(arg) => self.alert(format!(
                 "WARNING: message contained unexpected command '{}'",
                 arg

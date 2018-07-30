@@ -17,6 +17,7 @@
             <option value="scroll (0, 5)">Scroll Down by 5</option>
             <option value="scroll (-5, 0)">Scroll Left by 5</option>
             <option value="scroll (5, 0)">Scroll Right by 5</option>
+            <option value="restart">Restart Game</option>
           </select>
           <button type="submit" id="submit-command">Submit</button>
         </p>
