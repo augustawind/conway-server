@@ -9,6 +9,8 @@ use conway::{Cell, Game, Grid, GridConfig, View};
 
 static WS_ADDR: &str = "localhost:3012";
 
+static CHAR_ALIVE: char = '■';
+static CHAR_DEAD: char = '□';
 static DEFAULT_PATTERN: &str = r#"
 .......
 ...x...
@@ -33,12 +35,20 @@ impl Server {
     }
 
     fn new_game() -> Game {
+        let char_alive = CHAR_ALIVE.to_string();
+        let char_dead = CHAR_DEAD.to_string();
         Game::new(
             Grid::from_config(GridConfig {
-                pattern: DEFAULT_PATTERN.to_string(),
+                pattern: DEFAULT_PATTERN
+                    .replace('x', char_alive.as_str())
+                    .replace('.', char_dead.as_str())
+                    .to_string(),
+                char_alive: CHAR_ALIVE,
+                char_dead: CHAR_DEAD,
                 view: View::Fixed,
                 width: 50,
                 height: 50,
+
                 ..Default::default()
             }).unwrap(),
             Default::default(),
