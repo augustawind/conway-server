@@ -73,6 +73,10 @@ impl ws::Handler for Server {
             }
             Some("toggle-playback") => {
                 self.paused = !self.paused;
+                if !self.paused {
+                    game.tick();
+                    return self.out.send(game.draw());
+                }
                 Ok(())
             }
             Some("scroll") => {
@@ -81,7 +85,7 @@ impl ws::Handler for Server {
                     Err(err) => return self.alert(format!("WARNING: {}", err)),
                 };
                 game.scroll(dx, dy);
-                Ok(())
+                self.out.send(game.draw())
             }
             Some(arg) => self.alert(format!(
                 "WARNING: message contained unexpected command '{}'",

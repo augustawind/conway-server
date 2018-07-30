@@ -30,7 +30,6 @@ window.onload = function() {
         e.preventDefault();
         var cmd = commandField.value;
         socket.send(cmd);
-        commandField.value = '';
         return false;
     };
 };

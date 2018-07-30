@@ -9,9 +9,14 @@
     <section id="controls">
       <form id="command-form">
         <p>
-          <label for="command">
-            Command: <input type="text" id="command" name="command">
-          </label>
+          <select id="command">
+            <option value="toggle-playback">Play/Pause</option>
+            <option value="step">Next Frame</option>
+            <option value="scroll (0, -5)">Scroll Up by 5</option>
+            <option value="scroll (0, 5)">Scroll Down by 5</option>
+            <option value="scroll (-5, 0)">Scroll Left by 5</option>
+            <option value="scroll (5, 0)">Scroll Right by 5</option>
+          </select>
           <button type="submit" id="submit-command">Submit</button>
         </p>
       </form>
