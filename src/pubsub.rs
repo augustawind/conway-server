@@ -62,7 +62,7 @@ impl Server {
 
     fn next_turn(&self, game: &mut Game) -> ws::Result<()> {
         if game.is_over() {
-            self.alert("Grid is empty. Start a new game.")
+            self.out.send("Grid is empty. Start a new game.")
         } else {
             game.tick();
             self.out.send(game.draw())
