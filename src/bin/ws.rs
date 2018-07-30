@@ -55,5 +55,5 @@ impl ws::Handler for Server {
 }
 
 fn main() {
-    ws::listen(WS_ADDR, |out| Server::new(out)).unwrap();
+    ws::listen(WS_ADDR, Server::new).unwrap();
 }
